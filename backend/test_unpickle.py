@@ -1,7 +1,10 @@
+import os
 import pickle
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "..", "Model", "ML model", "XGmodel.pkl")
 
-with open("XGmodel.pkl", "rb") as f:
+with open(MODEL_PATH, "rb") as f:
     model = pickle.load(f)
 
 print(type(model))         

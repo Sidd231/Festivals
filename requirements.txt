@@ -5,3 +5,8 @@ seaborn
 scikit-learn
 kagglehub
 openpyxl
+flask
+flask-cors
+xgboost
+
+
