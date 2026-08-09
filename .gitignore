@@ -14,8 +14,12 @@ Thumbs.db
 # Jupyter Notebook
 .ipynb_checkpoints
 
-# Dataset files
-DataSet/
+#data
+test.csv
+sample_submission.csv
+
 
 # VS Code
 .vscode/
+
+run_backend.bat
