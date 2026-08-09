@@ -1,0 +1,1779 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Festive Demand Forecast AI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --bg: #050914;
+      --bg-soft: #0a1020;
+      --card: rgba(13, 20, 36, 0.72);
+      --card-hover: rgba(18, 27, 47, 0.82);
+
+      --border: rgba(148, 163, 184, 0.13);
+      --border-bright: rgba(96, 165, 250, 0.28);
+
+      --blue: #60a5fa;
+      --cyan: #22d3ee;
+      --green: #34d399;
+      --purple: #a78bfa;
+      --pink: #f472b6;
+
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --danger: #fb7185;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      padding: 32px 20px 80px;
+      overflow-x: hidden;
+
+      background:
+        radial-gradient(
+          circle at 10% 10%,
+          rgba(37, 99, 235, 0.16),
+          transparent 30%
+        ),
+        radial-gradient(
+          circle at 90% 15%,
+          rgba(168, 85, 247, 0.13),
+          transparent 28%
+        ),
+        radial-gradient(
+          circle at 50% 90%,
+          rgba(16, 185, 129, 0.09),
+          transparent 30%
+        ),
+        linear-gradient(
+          135deg,
+          #030712 0%,
+          #07101f 45%,
+          #050914 100%
+        );
+
+      position: relative;
+    }
+
+    /* =====================================================
+       ANIMATED BACKGROUND
+    ===================================================== */
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -3;
+
+      background-image:
+        linear-gradient(
+          rgba(96, 165, 250, 0.035) 1px,
+          transparent 1px
+        ),
+        linear-gradient(
+          90deg,
+          rgba(96, 165, 250, 0.035) 1px,
+          transparent 1px
+        );
+
+      background-size: 50px 50px;
+
+      mask-image: linear-gradient(
+        to bottom,
+        black,
+        transparent 90%
+      );
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      width: 500px;
+      height: 500px;
+      left: -180px;
+      top: 25%;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: -2;
+
+      background: rgba(37, 99, 235, 0.08);
+      filter: blur(100px);
+
+      animation: floatingGlow 10s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatingGlow {
+      from {
+        transform: translate(0, 0) scale(1);
+      }
+
+      to {
+        transform: translate(180px, -80px) scale(1.25);
+      }
+    }
+
+    /* Floating background lights */
+
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: -1;
+      filter: blur(80px);
+      opacity: 0.18;
+    }
+
+    .orb-1 {
+      width: 260px;
+      height: 260px;
+      background: #2563eb;
+      right: -100px;
+      top: 20%;
+      animation: orbOne 12s ease-in-out infinite;
+    }
+
+    .orb-2 {
+      width: 220px;
+      height: 220px;
+      background: #7c3aed;
+      left: 20%;
+      bottom: -100px;
+      animation: orbTwo 15s ease-in-out infinite;
+    }
+
+    .orb-3 {
+      width: 180px;
+      height: 180px;
+      background: #06b6d4;
+      right: 25%;
+      top: 5%;
+      animation: orbThree 11s ease-in-out infinite;
+    }
+
+    @keyframes orbOne {
+      0%,
+      100% {
+        transform: translate(0, 0);
+      }
+
+      50% {
+        transform: translate(-80px, 70px);
+      }
+    }
+
+    @keyframes orbTwo {
+      0%,
+      100% {
+        transform: translate(0, 0);
+      }
+
+      50% {
+        transform: translate(100px, -80px);
+      }
+    }
+
+    @keyframes orbThree {
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      50% {
+        transform: translate(-70px, 80px) scale(1.2);
+      }
+    }
+
+    /* =====================================================
+       MAIN WRAPPER
+    ===================================================== */
+
+    .wrap {
+      max-width: 1050px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* =====================================================
+       HERO
+    ===================================================== */
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+
+      padding: 38px 38px 34px;
+      border-radius: 24px;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(15, 23, 42, 0.88),
+          rgba(15, 23, 42, 0.60)
+        );
+
+      border: 1px solid var(--border);
+
+      box-shadow:
+        0 25px 80px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+
+      margin-bottom: 22px;
+
+      animation: heroEntry 0.8s ease forwards;
+    }
+
+    @keyframes heroEntry {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Hero glow */
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      width: 380px;
+      height: 380px;
+
+      right: -150px;
+      top: -230px;
+
+      background: radial-gradient(
+        circle,
+        rgba(59, 130, 246, 0.25),
+        transparent 65%
+      );
+
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+
+      width: 100%;
+      height: 1px;
+
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(96, 165, 250, 0.4),
+        rgba(52, 211, 153, 0.35),
+        transparent
+      );
+
+      animation: scanLine 4s linear infinite;
+    }
+
+    @keyframes scanLine {
+      0% {
+        opacity: 0.2;
+        transform: translateX(-30%);
+      }
+
+      50% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0.2;
+        transform: translateX(30%);
+      }
+    }
+
+    .hero-title-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .hero-icon {
+      width: 54px;
+      height: 54px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 16px;
+
+      font-size: 28px;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(96, 165, 250, 0.18),
+          rgba(34, 211, 238, 0.08)
+        );
+
+      border: 1px solid rgba(96, 165, 250, 0.22);
+
+      box-shadow:
+        0 0 35px rgba(59, 130, 246, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+      animation: iconPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes iconPulse {
+      0%,
+      100% {
+        transform: translateY(0);
+        box-shadow: 0 0 25px rgba(59, 130, 246, 0.12);
+      }
+
+      50% {
+        transform: translateY(-4px);
+        box-shadow: 0 0 40px rgba(59, 130, 246, 0.28);
+      }
+    }
+
+    .hero-title {
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+
+      background:
+        linear-gradient(
+          90deg,
+          #60a5fa,
+          #38bdf8,
+          #34d399,
+          #a78bfa
+        );
+
+      background-size: 300% auto;
+
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+
+      animation: gradientText 7s ease infinite;
+    }
+
+    @keyframes gradientText {
+      0% {
+        background-position: 0% center;
+      }
+
+      50% {
+        background-position: 100% center;
+      }
+
+      100% {
+        background-position: 0% center;
+      }
+    }
+
+    .hero-sub {
+      color: var(--muted);
+      margin-top: 12px;
+      margin-left: 70px;
+      font-size: 14px;
+      line-height: 1.6;
+      max-width: 700px;
+    }
+
+    /* =====================================================
+       HYPERLOCAL AI STATUS
+    ===================================================== */
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+
+      margin-top: 20px;
+      margin-left: 70px;
+
+      padding: 8px 15px;
+
+      border-radius: 999px;
+
+      font-size: 12px;
+      font-weight: 700;
+
+      letter-spacing: 0.04em;
+
+      color: #67e8f9;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(34, 211, 238, 0.10),
+          rgba(96, 165, 250, 0.08)
+        );
+
+      border: 1px solid rgba(34, 211, 238, 0.25);
+
+      box-shadow:
+        0 0 25px rgba(34, 211, 238, 0.07),
+        inset 0 0 20px rgba(34, 211, 238, 0.03);
+    }
+
+    .status-pill .dot {
+      width: 8px;
+      height: 8px;
+
+      border-radius: 50%;
+
+      background: #34d399;
+
+      box-shadow:
+        0 0 0 4px rgba(52, 211, 153, 0.08),
+        0 0 15px rgba(52, 211, 153, 0.8);
+
+      animation: liveDot 1.8s ease-in-out infinite;
+    }
+
+    @keyframes liveDot {
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.55;
+        transform: scale(0.75);
+      }
+    }
+
+    /* =====================================================
+       CARDS
+    ===================================================== */
+
+    .card {
+      position: relative;
+      overflow: hidden;
+
+      background: var(--card);
+
+      border: 1px solid var(--border);
+
+      border-radius: 20px;
+
+      padding: 26px;
+
+      margin-bottom: 20px;
+
+      box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.025);
+
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+
+      transition:
+        transform 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+
+      animation: cardEntry 0.8s ease backwards;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+
+      border-color: var(--border-bright);
+
+      box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.30),
+        0 0 35px rgba(59, 130, 246, 0.04);
+    }
+
+    @keyframes cardEntry {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .card .desc {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 22px;
+    }
+
+    /* =====================================================
+       NOTE
+    ===================================================== */
+
+    .note {
+      position: relative;
+
+      font-size: 12.5px;
+      line-height: 1.6;
+
+      color: #a5b4fc;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(99, 102, 241, 0.08),
+          rgba(167, 139, 250, 0.04)
+        );
+
+      border: 1px solid rgba(129, 140, 248, 0.18);
+
+      padding: 12px 15px;
+
+      border-radius: 12px;
+
+      margin-bottom: 24px;
+    }
+
+    .note::before {
+      content: "✦";
+      margin-right: 8px;
+      color: var(--purple);
+    }
+
+    /* =====================================================
+       GROUP TITLES
+    ===================================================== */
+
+    .group-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      font-size: 11px;
+
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+
+      color: #a78bfa;
+
+      font-weight: 800;
+
+      margin: 24px 0 12px;
+    }
+
+    .group-title::after {
+      content: "";
+
+      height: 1px;
+      flex: 1;
+
+      background:
+        linear-gradient(
+          90deg,
+          rgba(167, 139, 250, 0.18),
+          transparent
+        );
+    }
+
+    .group-title:first-child {
+      margin-top: 0;
+    }
+
+    /* =====================================================
+       FORM GRID
+    ===================================================== */
+
+    .grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(auto-fit, minmax(190px, 1fr));
+
+      gap: 14px;
+    }
+
+    .field {
+      transition: transform 0.2s ease;
+    }
+
+    .field:hover {
+      transform: translateY(-1px);
+    }
+
+    .field label {
+      display: block;
+
+      font-size: 12px;
+
+      color: #9aa8bb;
+
+      margin-bottom: 7px;
+
+      font-weight: 500;
+    }
+
+    input[type="number"],
+    input[type="text"],
+    select {
+      width: 100%;
+
+      padding: 11px 13px;
+
+      border-radius: 11px;
+
+      border: 1px solid rgba(148, 163, 184, 0.13);
+
+      background:
+        rgba(3, 7, 18, 0.65);
+
+      color: var(--text);
+
+      font-size: 13.5px;
+
+      font-family: inherit;
+
+      transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+    }
+
+    input[type="number"]:hover,
+    input[type="text"]:hover,
+    select:hover {
+      border-color: rgba(96, 165, 250, 0.25);
+      background: rgba(5, 12, 26, 0.8);
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+
+      border-color: rgba(96, 165, 250, 0.65);
+
+      box-shadow:
+        0 0 0 3px rgba(96, 165, 250, 0.08),
+        0 0 20px rgba(59, 130, 246, 0.06);
+
+      background: rgba(5, 12, 26, 0.9);
+    }
+
+    select option {
+      background: #0b1220;
+      color: #f1f5f9;
+    }
+
+    /* =====================================================
+       TOGGLE
+    ===================================================== */
+
+    .toggle-field {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      background: rgba(3, 7, 18, 0.55);
+
+      border: 1px solid rgba(148, 163, 184, 0.13);
+
+      border-radius: 11px;
+
+      padding: 11px 13px;
+    }
+
+    .switch {
+      position: relative;
+
+      width: 43px;
+      height: 23px;
+
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+
+      background: #1e293b;
+
+      border: 1px solid rgba(148, 163, 184, 0.18);
+
+      border-radius: 999px;
+
+      transition: 0.25s;
+    }
+
+    .slider::before {
+      content: "";
+
+      position: absolute;
+
+      height: 17px;
+      width: 17px;
+
+      left: 2px;
+      bottom: 2px;
+
+      background: #cbd5e1;
+
+      border-radius: 50%;
+
+      transition: 0.25s;
+
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    input:checked + .slider {
+      background:
+        linear-gradient(
+          90deg,
+          #2563eb,
+          #10b981
+        );
+
+      border-color: transparent;
+
+      box-shadow:
+        0 0 15px rgba(52, 211, 153, 0.18);
+    }
+
+    input:checked + .slider::before {
+      transform: translateX(20px);
+      background: white;
+    }
+
+    /* =====================================================
+       PREDICT BUTTON
+    ===================================================== */
+
+    .predict-btn {
+      position: relative;
+      overflow: hidden;
+
+      width: 100%;
+
+      padding: 15px;
+
+      margin-top: 26px;
+
+      border: 1px solid rgba(255, 255, 255, 0.12);
+
+      border-radius: 13px;
+
+      background:
+        linear-gradient(
+          100deg,
+          #2563eb,
+          #06b6d4,
+          #10b981
+        );
+
+      background-size: 200% auto;
+
+      color: white;
+
+      font-weight: 700;
+
+      font-size: 14px;
+
+      letter-spacing: 0.01em;
+
+      cursor: pointer;
+
+      box-shadow:
+        0 10px 30px rgba(37, 99, 235, 0.18);
+
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background-position 0.5s ease;
+    }
+
+    .predict-btn::before {
+      content: "";
+
+      position: absolute;
+
+      top: 0;
+      left: -100%;
+
+      width: 70%;
+      height: 100%;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.18),
+          transparent
+        );
+
+      transform: skewX(-20deg);
+
+      transition: left 0.6s ease;
+    }
+
+    .predict-btn:hover {
+      transform: translateY(-2px);
+
+      background-position: 100% center;
+
+      box-shadow:
+        0 15px 40px rgba(37, 99, 235, 0.25),
+        0 0 25px rgba(34, 211, 238, 0.08);
+    }
+
+    .predict-btn:hover::before {
+      left: 130%;
+    }
+
+    .predict-btn:active {
+      transform: translateY(0);
+    }
+
+    .predict-btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* =====================================================
+       RESULT
+    ===================================================== */
+
+    .result-card {
+      display: none;
+
+      text-align: center;
+
+      padding: 40px 24px;
+
+      background:
+        radial-gradient(
+          circle at center,
+          rgba(16, 185, 129, 0.06),
+          transparent 55%
+        ),
+        var(--card);
+    }
+
+    .result-card.show {
+      display: block;
+      animation: resultReveal 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    @keyframes resultReveal {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .result-label {
+      color: var(--muted);
+
+      font-size: 11px;
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.15em;
+
+      font-weight: 700;
+    }
+
+    .result-value {
+      font-size: clamp(42px, 8vw, 64px);
+
+      font-weight: 800;
+
+      background:
+        linear-gradient(
+          90deg,
+          #34d399,
+          #22d3ee,
+          #60a5fa
+        );
+
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+
+      background-size: 200% auto;
+
+      margin: 8px 0;
+
+      animation:
+        resultGradient 4s ease infinite,
+        numberGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes resultGradient {
+      0% {
+        background-position: 0% center;
+      }
+
+      50% {
+        background-position: 100% center;
+      }
+
+      100% {
+        background-position: 0% center;
+      }
+    }
+
+    @keyframes numberGlow {
+      from {
+        filter: drop-shadow(0 0 4px rgba(52, 211, 153, 0.15));
+      }
+
+      to {
+        filter: drop-shadow(0 0 15px rgba(34, 211, 238, 0.3));
+      }
+    }
+
+    .result-unit {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* =====================================================
+       ERROR
+    ===================================================== */
+
+    .error-box {
+      display: none;
+
+      background: rgba(244, 63, 94, 0.08);
+
+      border: 1px solid rgba(244, 63, 94, 0.25);
+
+      color: #fda4af;
+
+      padding: 13px 15px;
+
+      border-radius: 11px;
+
+      font-size: 13px;
+
+      margin-top: 16px;
+    }
+
+    .error-box.show {
+      display: block;
+
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(5px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* =====================================================
+       FOOTER
+    ===================================================== */
+
+    footer {
+      text-align: center;
+
+      color: #64748b;
+
+      font-size: 11px;
+
+      margin-top: 28px;
+
+      letter-spacing: 0.04em;
+    }
+
+    footer span {
+      color: #94a3b8;
+    }
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+
+    @media (max-width: 650px) {
+      body {
+        padding: 16px 12px 50px;
+      }
+
+      .hero {
+        padding: 26px 22px;
+        border-radius: 18px;
+      }
+
+      .hero-title-row {
+        align-items: flex-start;
+      }
+
+      .hero-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 22px;
+        border-radius: 13px;
+      }
+
+      .hero-title {
+        font-size: 27px;
+        letter-spacing: -1px;
+      }
+
+      .hero-sub,
+      .status-pill {
+        margin-left: 0;
+      }
+
+      .hero-sub {
+        margin-top: 12px;
+      }
+
+      .card {
+        padding: 20px 16px;
+        border-radius: 16px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Reduced motion accessibility */
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Animated Background Orbs -->
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
+
+
+  <div class="wrap">
+
+    <!-- =================================================
+         HERO
+    ================================================== -->
+
+    <div class="hero">
+
+      <div class="hero-title-row">
+
+        <div class="hero-icon">
+          ⚡
+        </div>
+
+        <div class="hero-title">
+          Festive Demand Forecast AI
+        </div>
+
+      </div>
+
+      <div class="hero-sub">
+        AI-powered inventory demand prediction for smarter
+        festive-season planning and hyperlocal retail intelligence.
+      </div>
+
+      <!-- FIXED BRANDING -->
+      <div id="statusPill" class="status-pill">
+
+        <span class="dot"></span>
+
+        <span id="statusText">
+          HYPERLOCAL AI
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================
+         PREDICTION CARD
+    ================================================== -->
+
+    <div class="card">
+
+      <h2>📋 Prediction Inputs</h2>
+
+      <div class="desc">
+        Enter store, item and festival information to forecast expected demand.
+      </div>
+
+      <div class="note">
+        Hyperlocal AI analyzes store-level, festival and regional signals
+        to generate demand predictions.
+      </div>
+
+
+      <form id="predictForm">
+
+        <!-- Store & Item -->
+
+        <div class="group-title">
+          Store &amp; Item
+        </div>
+
+        <div class="grid">
+
+          <div class="field">
+
+            <label>Store ID</label>
+
+            <input
+              type="number"
+              id="store"
+              required
+            />
+
+          </div>
+
+
+          <div class="field">
+
+            <label>Item ID</label>
+
+            <input
+              type="number"
+              id="item"
+              required
+            />
+
+          </div>
+
+        </div>
+
+
+        <!-- Date -->
+
+        <div class="group-title">
+          Date
+        </div>
+
+        <div class="grid">
+
+          <div class="field">
+
+            <label>Year</label>
+
+            <input
+              type="number"
+              id="year"
+              value="2026"
+              required
+            />
+
+          </div>
+
+
+          <div class="field">
+
+            <label>Month</label>
+
+            <select id="month" required>
+
+              <option value="1">January</option>
+              <option value="2">February</option>
+              <option value="3">March</option>
+              <option value="4">April</option>
+              <option value="5">May</option>
+              <option value="6">June</option>
+              <option value="7">July</option>
+              <option value="8" selected>August</option>
+              <option value="9">September</option>
+              <option value="10">October</option>
+              <option value="11">November</option>
+              <option value="12">December</option>
+
+            </select>
+
+          </div>
+
+
+          <div class="field">
+
+            <label>Day of Month</label>
+
+            <input
+              type="number"
+              id="day"
+              min="1"
+              max="31"
+              value="9"
+              required
+            />
+
+          </div>
+
+
+          <div class="field">
+
+            <label>Weekday</label>
+
+            <select id="weekday" required>
+
+              <option value="0">Monday</option>
+              <option value="1">Tuesday</option>
+              <option value="2">Wednesday</option>
+              <option value="3">Thursday</option>
+              <option value="4">Friday</option>
+              <option value="5">Saturday</option>
+              <option value="6" selected>Sunday</option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <!-- Festival Context -->
+
+        <div class="group-title">
+          Festival Context
+        </div>
+
+        <div class="grid">
+
+          <div class="field">
+
+            <label>Festival Name</label>
+
+            <select id="festival_name"></select>
+
+          </div>
+
+
+          <div class="field">
+
+            <label>Festival Type</label>
+
+            <select id="festival_type"></select>
+
+          </div>
+
+
+          <div class="field">
+
+            <label>Region</label>
+
+            <select id="region"></select>
+
+          </div>
+
+
+          <div class="field">
+
+            <label>Impact Scale (0–100)</label>
+
+            <input
+              type="number"
+              id="impact_scale"
+              min="0"
+              max="100"
+              value="50"
+              required
+            />
+
+          </div>
+
+
+          <div class="field">
+
+            <label>Days to Next Festival</label>
+
+            <input
+              type="number"
+              id="days_to_next_festival"
+              min="0"
+              value="5"
+              required
+            />
+
+          </div>
+
+        </div>
+
+
+        <!-- Flags -->
+
+        <div class="group-title">
+          Event Signals
+        </div>
+
+        <div class="grid">
+
+          <div class="field toggle-field">
+
+            <label style="margin: 0">
+              Regional Event?
+            </label>
+
+            <label class="switch">
+
+              <input
+                type="checkbox"
+                id="is_regional_event"
+              />
+
+              <span class="slider"></span>
+
+            </label>
+
+          </div>
+
+
+          <div class="field toggle-field">
+
+            <label style="margin: 0">
+              Is Festival Day?
+            </label>
+
+            <label class="switch">
+
+              <input
+                type="checkbox"
+                id="is_festival_day"
+              />
+
+              <span class="slider"></span>
+
+            </label>
+
+          </div>
+
+
+          <div class="field toggle-field">
+
+            <label style="margin: 0">
+              Pre-Festival Week?
+            </label>
+
+            <label class="switch">
+
+              <input
+                type="checkbox"
+                id="pre_festival_week"
+              />
+
+              <span class="slider"></span>
+
+            </label>
+
+          </div>
+
+        </div>
+
+
+        <!-- Predict Button -->
+
+        <button
+          class="predict-btn"
+          type="submit"
+          id="predictBtn"
+          disabled
+        >
+          🔮 Predict Demand
+        </button>
+
+      </form>
+
+
+      <div
+        class="error-box"
+        id="errorBox"
+      ></div>
+
+    </div>
+
+
+    <!-- =================================================
+         RESULT
+    ================================================== -->
+
+    <div
+      class="card result-card"
+      id="resultCard"
+    >
+
+      <div class="result-label">
+        Predicted Demand
+      </div>
+
+      <div
+        class="result-value"
+        id="resultValue"
+      >
+        —
+      </div>
+
+      <div class="result-unit">
+        units · model prediction
+      </div>
+
+    </div>
+
+
+    <!-- =================================================
+         FOOTER
+    ================================================== -->
+
+    <footer>
+      <span>Festive AI</span> · Hyperlocal Demand Intelligence ·
+      All rights reserved
+    </footer>
+
+  </div>
+
+
+  <!-- =====================================================
+       JAVASCRIPT
+  ===================================================== -->
+
+  <script>
+
+    const API_BASE = "http://127.0.0.1:5000";
+
+
+    const statusPill =
+      document.getElementById("statusPill");
+
+    const statusText =
+      document.getElementById("statusText");
+
+    const predictBtn =
+      document.getElementById("predictBtn");
+
+    const form =
+      document.getElementById("predictForm");
+
+    const errorBox =
+      document.getElementById("errorBox");
+
+    const resultCard =
+      document.getElementById("resultCard");
+
+    const resultValue =
+      document.getElementById("resultValue");
+
+
+    /* ==========================================
+       SELECT OPTIONS
+    ========================================== */
+
+    function fillSelect(id, options) {
+
+      const el = document.getElementById(id);
+
+      el.innerHTML = options
+        .map(
+          (o) =>
+            `<option value="${o}">${o}</option>`
+        )
+        .join("");
+
+    }
+
+
+    /* ==========================================
+       INITIALIZE
+    ========================================== */
+
+    async function init() {
+
+      try {
+
+        const res =
+          await fetch(`${API_BASE}/api/model-info`);
+
+        const data =
+          await res.json();
+
+
+        if (data.error) {
+          throw new Error(data.error);
+        }
+
+
+        /*
+          IMPORTANT:
+          Don't show XGBRegressor / 14 features
+          in the UI.
+
+          Branding remains:
+          HYPERLOCAL AI
+        */
+
+        statusText.textContent =
+          "HYPERLOCAL AI";
+
+
+        fillSelect(
+          "festival_name",
+          data.options.festival_name
+        );
+
+
+        fillSelect(
+          "festival_type",
+          data.options.festival_type
+        );
+
+
+        fillSelect(
+          "region",
+          data.options.region
+        );
+
+
+        predictBtn.disabled = false;
+
+      }
+
+      catch (err) {
+
+        /*
+          Keep branding unchanged even
+          when backend is unavailable.
+        */
+
+        statusText.textContent =
+          "HYPERLOCAL AI";
+
+        /*
+          Prediction button remains disabled
+          because backend is required.
+        */
+
+        console.error(err);
+
+      }
+
+    }
+
+
+    /* ==========================================
+       FORM SUBMIT
+    ========================================== */
+
+    form.addEventListener(
+      "submit",
+      async (e) => {
+
+        e.preventDefault();
+
+
+        errorBox.classList.remove("show");
+
+        resultCard.classList.remove("show");
+
+
+        predictBtn.disabled = true;
+
+        predictBtn.textContent =
+          "⏳ Analyzing Demand...";
+
+
+        const payload = {
+
+          store:
+            document.getElementById("store").value,
+
+          item:
+            document.getElementById("item").value,
+
+          year:
+            document.getElementById("year").value,
+
+          month:
+            document.getElementById("month").value,
+
+          day:
+            document.getElementById("day").value,
+
+          weekday:
+            document.getElementById("weekday").value,
+
+          festival_name:
+            document.getElementById("festival_name").value,
+
+          festival_type:
+            document.getElementById("festival_type").value,
+
+          region:
+            document.getElementById("region").value,
+
+          impact_scale:
+            document.getElementById("impact_scale").value,
+
+          days_to_next_festival:
+            document.getElementById(
+              "days_to_next_festival"
+            ).value,
+
+          is_regional_event:
+            document.getElementById(
+              "is_regional_event"
+            ).checked,
+
+          is_festival_day:
+            document.getElementById(
+              "is_festival_day"
+            ).checked,
+
+          pre_festival_week:
+            document.getElementById(
+              "pre_festival_week"
+            ).checked
+
+        };
+
+
+        try {
+
+          const res =
+            await fetch(
+              `${API_BASE}/api/predict`,
+              {
+                method: "POST",
+
+                headers: {
+                  "Content-Type":
+                    "application/json"
+                },
+
+                body:
+                  JSON.stringify(payload)
+              }
+            );
+
+
+          const data =
+            await res.json();
+
+
+          if (data.error) {
+
+            errorBox.textContent =
+              "Error: " + data.error;
+
+            errorBox.classList.add("show");
+
+          }
+
+          else {
+
+            resultValue.textContent =
+              data.prediction.toFixed(2);
+
+
+            resultCard.classList.add("show");
+
+
+            resultCard.scrollIntoView({
+              behavior: "smooth",
+              block: "center"
+            });
+
+          }
+
+        }
+
+        catch (err) {
+
+          errorBox.textContent =
+            "Request failed. Check backend server.";
+
+          errorBox.classList.add("show");
+
+          console.error(err);
+
+        }
+
+        finally {
+
+          predictBtn.disabled = false;
+
+          predictBtn.textContent =
+            "🔮 Predict Demand";
+
+        }
+
+      }
+    );
+
+
+    /* Start application */
+
+    init();
+
+  </script>
+
+</body>
+</html>
