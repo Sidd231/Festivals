@@ -19,3 +19,6 @@ DataSet/
 
 # VS Code
 .vscode/
+
+backend/
+run_backend.bat
