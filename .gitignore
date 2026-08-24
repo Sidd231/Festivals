@@ -15,7 +15,9 @@ Thumbs.db
 .ipynb_checkpoints
 
 # Dataset files
-DataSet/
+test.csv
+sample_submission.csv
+
 
 # VS Code
 .vscode/
