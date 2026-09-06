@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 88px; /* offset for the sticky navbar when jumping to an anchor */
+}
+
+body {
+  background: #F4F5F7;
+  color: #16213C;
+  font-family: "Inter", sans-serif;
+}
+
+h1, h2, h3, h4 {
+  font-family: "Fraunces", serif;
+}
+
+/* Visible keyboard focus everywhere, including native form controls */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #D98E04;
+  outline-offset: 2px;
+}
+
+/* Custom range input (impact scale) — Tailwind has no cross-browser slider utility */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: #E4E6EA;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #D98E04;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 0 0 1px rgba(22, 33, 60, 0.15);
+  cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #D98E04;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 0 0 1px rgba(22, 33, 60, 0.15);
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
