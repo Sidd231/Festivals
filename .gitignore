@@ -15,12 +15,12 @@ Thumbs.db
 .ipynb_checkpoints
 
 # Dataset files
-test.csv
-sample_submission.csv
-
+DataSet/
 
 # VS Code
 .vscode/
 
 backend/
+run_backend.bat
+
 run_backend.bat
