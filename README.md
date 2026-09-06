@@ -1,187 +1,83 @@
 # Festive Demand Forecast AI
 
-An AI-powered demand forecasting application that uses a trained XGBoost regression model to predict inventory demand based on store, item, date, and festival-related factors.
-
----
+An AI-powered demand forecasting application that uses a trained XGBoost regression model to predict store-item demand based on store, item, date, and festival/regional context (festival name, festival type, region, impact scale, and proximity to upcoming festivals).
 
 ## Tech Stack
 
-### Backend
-* **Python 3.12+**
-* **Flask** - REST API server
-* **Flask-CORS** - Enable Cross-Origin Resource Sharing
-* **XGBoost** - Gradient boosted decision trees model
-* **Scikit-learn** - Machine learning utilities
-* **Pandas & NumPy** - Data processing and numerical calculations
+**Backend**
+- Python
+- Flask + Flask-CORS
+- XGBoost
+- Scikit-learn
+- Pandas / NumPy
 
-### Frontend
-* **HTML5 & Vanilla CSS** - Structure and custom modern styling
-* **JavaScript (ES6)** - API consumption, dynamic state management, and charting
-* **Chart.js** - Dynamic interactive demand forecast visualizations
-* **Google Fonts (Inter)** - Modern typography
+**Frontend**
+- React (Vite)
+- Tailwind CSS
 
----
+**Modeling**
+- Jupyter Notebooks (data cleaning + model training)
 
 ## Project Structure
 
 ```text
 Festivals/
-├── .venv/                  # Python Virtual Environment (created during setup)
-├── DataSet/                # Raw datasets for modeling
-│   ├── sample_submission.csv
-│   └── test.csv
-├── Model/                  # Notebooks for model training & exploratory data analysis
-│   ├── Cleaning.ipynb      # Notebook for dataset preprocessing & cleaning
-│   └── Festival_model.ipynb# XGBoost regression model training and validation
-├── backend/                # Flask API server
-│   ├── XGmodel.pkl         # Serialized (pickled) XGBoost regression model
-│   ├── app.py              # Flask server and prediction routes
-│   ├── requirements.txt    # Dependencies specific to the backend API server
-│   └── test_unpickle.py    # Utility script to test model deserialization
-├── frontend/               # Frontend user interface
-│   └── index.html          # Interactive client dashboard
-├── .gitignore              # Git ignore configuration
-├── README.md               # Project documentation (this file)
-├── requirements.txt        # Comprehensive root project dependencies
-└── run_backend.bat         # Batch script to easily run backend on Windows
+├── backend/
+│   ├── app.py                 # Flask app — /api/predict, /api/model-info
+│   ├── routes/                # (reserved for route modules)
+│   ├── services/              # (reserved for service modules)
+│   └── test_unpickle.py
+├── frontend/                  # React + Vite + Tailwind app
+│   ├── index.html
+│   ├── src/
+│   │   ├── App.jsx
+│   │   ├── components/        # Navbar, Hero, PredictWorkspace, ResultCard, etc.
+│   │   └── services/
+│   │       └── api.js         # Calls the Flask backend
+│   ├── package.json
+│   └── vite.config.js
+├── Model/
+│   ├── Cleaning.ipynb          # Data cleaning / preprocessing notebook
+│   ├── Festival_model.ipynb    # Model training notebook
+│   └── ML model/
+│       └── XGmodel.pkl         # Serialized trained XGBoost model
+├── DataSet/
+│   ├── train.csv               # Historical store-item sales data
+│   └── festivals_base.xlsx     # Festival and regional event metadata
+├── requirements.txt
+├── .gitignore
+└── README.md
 ```
 
----
+## Setup and Installation
 
-## Getting Started
+### Backend
+```bash
+pip install -r requirements.txt
+cd backend
+python app.py
+```
+Server starts at `http://127.0.0.1:5000`
 
-### Prerequisites
-Make sure you have [Python 3.12+](https://www.python.org/downloads/) installed.
+### Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-### Installation & Setup
+## How It Works
 
-1. **Clone or open the workspace folder:**
-   ```bash
-   cd Festivals
-   ```
+1. The React frontend collects store, item, date, and festival details through the prediction form.
+2. On submit, `services/api.js` sends a request to the Flask backend (`/api/predict`).
+3. The backend encodes the categorical fields (festival name, festival type, region, weekday) into the numeric format the model expects and builds the 14-feature input row.
+4. The serialized XGBoost model (`Model/ML model/XGmodel.pkl`) generates a prediction.
+5. The predicted demand value is returned as JSON and displayed on the frontend.
 
-2. **Create a virtual environment:**
-   ```bash
-   python -m venv .venv
-   ```
+## API Endpoints
 
-3. **Activate the virtual environment:**
-   * **Windows (Command Prompt / PowerShell):**
-     ```powershell
-     .venv\Scripts\activate
-     ```
-   * **macOS / Linux:**
-     ```bash
-     source .venv/bin/activate
-     ```
-
-4. **Install dependencies:**
-   * For model training & data exploration (includes Jupyter, seaborn, matplotlib, openpyxl, etc.):
-     ```bash
-     pip install -r requirements.txt
-     ```
-   * For running only the Flask backend API server:
-     ```bash
-     pip install -r backend/requirements.txt
-     ```
-
----
-
-## Running the Application
-
-### 1. Launch the Backend Server
-* **On Windows:**
-  Simply double-click the `run_backend.bat` script file, or run it in the terminal:
-  ```cmd
-  run_backend.bat
-  ```
-* **Or manually run via Python:**
-  Ensure your virtual environment is active, then navigate to the backend folder and run `app.py`:
-  ```bash
-  cd backend
-  python app.py
-  ```
-  The server will start at `http://127.0.0.1:5000`.
-
-### 2. Launch the Frontend Dashboard
-* Simply open `frontend/index.html` in any web browser of your choice (you can double-click the file or use a web server like Live Server in VS Code).
-
----
-
-## API Documentation
-
-### 1. Health Check
-* **Endpoint:** `GET /`
-* **Response:**
-  ```json
-  {
-    "status": "Backend is running",
-    "model_loaded": true
-  }
-  ```
-
-### 2. Model Info
-* **Endpoint:** `GET /api/model-info`
-* **Response:** Returns the type of the model, feature order, and allowed dropdown values for categorical options.
-  ```json
-  {
-    "feature_names": [
-      "store", "item", "year", "month", "day", "weekday",
-      "festival_name", "festival_type", "region", "impact_scale",
-      "is_regional_event", "days_to_next_festival",
-      "is_festival_day", "pre_festival_week"
-    ],
-    "model_type": "XGBRegressor",
-    "n_features": 14,
-    "options": {
-      "festival_name": ["None", "Diwali", "Holi", "Raksha Bandhan", "Navratri", "Eid", "Christmas", "Republic Day", "Independence Day", "Dussehra"],
-      "festival_type": ["None", "National", "Regional", "Religious"],
-      "region": ["Prayagraj Urban", "Prayagraj Rural", "Lucknow Central", "Varanasi Cluster"]
-    }
-  }
-  ```
-
-### 3. Predict Demand
-* **Endpoint:** `POST /api/predict`
-* **Headers:** `Content-Type: application/json`
-* **Request Body Example:**
-  ```json
-  {
-    "store": 1,
-    "item": 5,
-    "year": 2026,
-    "month": 8,
-    "day": 28,
-    "weekday": 4,
-    "festival_name": "Raksha Bandhan",
-    "festival_type": "Religious",
-    "region": "Lucknow Central",
-    "impact_scale": 70,
-    "is_regional_event": false,
-    "days_to_next_festival": 2,
-    "is_festival_day": false,
-    "pre_festival_week": true
-  }
-  ```
-* **Response Example:**
-  ```json
-  {
-    "encoded_input": {
-      "days_to_next_festival": 2.0,
-      "day": 28.0,
-      "festival_name": 7.0,
-      "festival_type": 3.0,
-      "impact_scale": 70.0,
-      "is_festival_day": 0.0,
-      "is_regional_event": 0.0,
-      "item": 5.0,
-      "month": 8.0,
-      "pre_festival_week": 1.0,
-      "region": 1.0,
-      "store": 1.0,
-      "weekday": 4.0,
-      "year": 2026.0
-    },
-    "prediction": 425.32
-  }
-  ```
+| Endpoint | Method | Description |
+|---|---|---|
+| `/` | GET | Health check — confirms the server and model are running |
+| `/api/model-info` | GET | Returns model type, feature list, and valid dropdown options |
+| `/api/predict` | POST | Accepts the 14 input fields and returns the predicted demand |
