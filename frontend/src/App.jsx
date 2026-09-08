@@ -9,7 +9,7 @@ import Footer from "./components/Footer";
 import SplashScreen from "./components/SplashScreen";
 import { getModelInfo, predictDemand } from "./services/api";
 
-const SPLASH_DURATION_MS = 2000;
+const SPLASH_DURATION_MS = 10000;
 
 const INITIAL_FORM_DATA = {
   store: "",
@@ -119,8 +119,7 @@ export default function App() {
     setPredicting(true);
 
     try {
-    const data = await predictDemand(formData);
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+      const data = await predictDemand(formData);
       setPrediction(data.prediction);
       setShowResult(true);
 

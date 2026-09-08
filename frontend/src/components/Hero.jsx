@@ -34,7 +34,11 @@ export default function Hero({ onScrollTo }) {
             </button>
           </div>
 
-        
+          <div className="mt-10 flex flex-wrap gap-x-8 gap-y-2 text-xs text-muted">
+            <span>React + Tailwind CSS</span>
+            <span>Python + Flask API</span>
+            <span>XGBoost regression model</span>
+          </div>
         </div>
 
         {/* Example prediction panel — illustrative, not a live/real result */}

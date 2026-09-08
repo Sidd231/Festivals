@@ -14,7 +14,7 @@ Thumbs.db
 # Jupyter Notebook
 .ipynb_checkpoints
 
-#data
+# Dataset files
 test.csv
 sample_submission.csv
 
@@ -22,4 +22,5 @@ sample_submission.csv
 # VS Code
 .vscode/
 
+backend/
 run_backend.bat
