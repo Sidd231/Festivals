@@ -9,7 +9,7 @@ import Footer from "./components/Footer";
 import SplashScreen from "./components/SplashScreen";
 import { getModelInfo, predictDemand } from "./services/api";
 
-const SPLASH_DURATION_MS = 10000;
+const SPLASH_DURATION_MS = 2000;
 
 const INITIAL_FORM_DATA = {
   store: "",
