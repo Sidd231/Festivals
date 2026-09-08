@@ -119,7 +119,8 @@ export default function App() {
     setPredicting(true);
 
     try {
-      const data = await predictDemand(formData);
+        const data = await predictDemand(formData);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       setPrediction(data.prediction);
       setShowResult(true);
 
