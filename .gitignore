@@ -59,9 +59,11 @@ htmlcov/
 # ==========================================
 # Frontend (React / Vite / Node)
 # ==========================================
+# Dependencies & Local overrides
 node_modules/
 */node_modules/
 frontend/node_modules/
+*.local
 
 # Vite / Build outputs
 dist/
@@ -76,6 +78,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+lerna-debug.log*
 
 # ==========================================
 # Jupyter Notebooks & Data Science
